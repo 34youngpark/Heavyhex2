@@ -1,39 +1,4 @@
-#!/usr/bin/env python3
-"""
-(3,3) Heavy-Hex CNN dataset generation
-======================================
-Uses a fixed (error_type x error_rate) grid and per-config shot counts:
-  * error_types / error_rates / noise_profiles / active_noise:
-      defined in heavyhex33_stim.py
-  * shots (d=3 entries): TRAIN 10,000,000 / TEST 100,000
-  * train/val split: not a ratio split; train and test files are
-    generated separately with independent seeds, and training uses the
-    test file as the validation set.
 
-Sample format:
-  features:        (N, 2*num_cycles, 4, 5) uint8 — 2D diamond-embedded tensor
-                   (channels [Z-plane, X-plane] x cycle,
-                    heavyhex33_stim.syndrome_tensor)
-  labels:          (N, 17) uint8 — per-qubit X-error label at final readout:
-                   the final-data MEASUREMENT FLIPS (error frame vs the
-                   noiseless reference, via stim.FlipSimulator).
-                   NOTE: the raw final bits themselves are individually
-                   random because the X-checks project |0>_L into X-eigen-
-                   states; only parities are deterministic. See
-                   heavyhex33_stim.sample_flips for why flips are the
-                   correct per-qubit label (used for ECR).
-  logical_labels:  (N,)  uint8 — logical Z flip (LER label). Equals the
-                   parity of `labels` over LOGICAL_Z, which is identical to
-                   the parity of the actually measured data [69,87,105]
-                   (the reference parity is deterministically 0).
-
-Usage:
-  python dataset_generation/make_dataset.py --smoke     # quick smoke (10k/2k)
-  python dataset_generation/make_dataset.py             # full grid (default shots)
-  python dataset_generation/make_dataset.py -n realistic/dp0.001_mf0.01_rf0.01_gd0.008 -p 0.01
-  python dataset_generation/make_dataset.py --config train_sweep.json
-      # every (noise, p, type, cycles) combo the sweep config needs
-"""
 import argparse
 import os
 import sys
