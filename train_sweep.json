@@ -1,0 +1,34 @@
+{
+  "_comment": "cross-evaluation용 스윕",
+
+  "defaults": {
+    "rates": [0.005],
+    "error_types": ["X"],
+    "cycles": 3,
+    "epochs": 30,
+    "patience": 5,
+    "batch_size": 2048,
+    "lr": 0.001,
+    "aux_weight": 0.5,
+    "pos_weight": "none",
+    "mwpm": true
+  },
+
+  "runs": [
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0",   "name": "s1" },
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0",   "name": "s2" },
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0",   "name": "s3" },
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0",   "name": "s4" },
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0",   "name": "s5" },
+
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.002", "name": "s1" },
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.002", "name": "s2" },
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.002", "name": "s3" },
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.002", "name": "s4" },
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.002", "name": "s5" },
+
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.005", "name": "s1" },
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.005", "name": "s2" },
+    { "noise": "realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.005", "name": "s3" }
+  ]
+}

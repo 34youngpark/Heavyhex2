@@ -1,142 +1,156 @@
+#!/usr/bin/env python3
 """
-H2 VQE - idle_depol sensitivity (simplified)
+H2 VQE - idle_depol sensitivity (CORRECTED)
+실제 density_matrix로 noisy 에너지를 계산합니다.
 """
+import sys
+import numpy as np
+import pandas as pd
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
+from qiskit import QuantumCircuit, transpile, QuantumRegister
+from qiskit.circuit.library import UCCSD, HartreeFock
+from qiskit.quantum_info import SparsePauliOp, Statevector
+from qiskit_aer import AerSimulator
+from qiskit_aer.noise import NoiseModel, depolarizing_error
 from qiskit_nature.second_q.drivers import PySCFDriver
 from qiskit_nature.second_q.mappers import JordanWignerMapper
 from qiskit_algorithms import NumPyMinimumEigensolver
-from qiskit.circuit.library import efficient_su2
-from qiskit_aer import AerSimulator
-from qiskit_aer.noise import NoiseModel, depolarizing_error, reset_error
 from scipy.optimize import minimize
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
 
-# ============ Step 1: H2 설정 ============
-print("Step 1: H2 정의 및 FCI 참값...")
-driver = PySCFDriver(atom="H 0 0 0; H 0 0 0.735", basis="sto-3g")
+# ==================================================================
+DIST = 0.735
+BASIS = "sto-3g"
+T1_NS = 100_000  # 100 us
+
+# ==================================================================
+print("[1] H2 정의 및 FCI 참값...")
+driver = PySCFDriver(atom=f"H 0 0 0; H 0 0 {DIST}", basis=BASIS)
 problem = driver.run()
 
 mapper = JordanWignerMapper()
-hamiltonian = mapper.map(problem.second_q_ops()[0])
+H_op = mapper.map(problem.hamiltonian.second_q_op())
+e_nuc = problem.nuclear_repulsion_energy
 
 solver = NumPyMinimumEigensolver()
-result = solver.compute_minimum_eigenvalue(hamiltonian)
-e_fci = float(result.eigenvalue.real)
-print(f"FCI 참값: {e_fci:.6f} hartree\n")
+result = solver.compute_minimum_eigenvalue(H_op)
+e_fci_elec = float(result.eigenvalue.real)
+e_fci = e_fci_elec + e_nuc
 
-# ============ Step 2: Ansatz ============
-print("Step 2: Ansatz 설정...")
-ansatz = efficient_su2(num_qubits=hamiltonian.num_qubits, reps=2)
-print(f"Ansatz 파라미터: {ansatz.num_parameters}\n")
+print(f"  FCI (total): {e_fci:+.6f} Ha")
 
-# ============ Step 3: Noiseless optimize ============
-print("Step 3: Noiseless VQE optimize...")
-from qiskit.quantum_info import DensityMatrix
+# ==================================================================
+print("[2] UCCSD ansatz...")
+hf_state = HartreeFock(problem.num_spatial_orbitals, problem.num_particles, mapper)
+ansatz = UCCSD(problem.num_spatial_orbitals, problem.num_particles, mapper,
+               initial_state=hf_state)
+n_params = ansatz.num_parameters
+print(f"  params: {n_params}")
 
-def objective_noiseless(params):
-    qc = ansatz.assign_parameters(params)
-    dm = DensityMatrix.from_instruction(qc)
-    energy = float(np.real(np.vdot(dm.data, hamiltonian.to_matrix() @ dm.data)))
-    return energy
+# ==================================================================
+print("[3] Noiseless VQE optimize...")
+H_matrix = H_op.to_matrix()
 
-x0 = np.random.uniform(0, 2*np.pi, ansatz.num_parameters)
-result = minimize(objective_noiseless, x0, method='COBYLA', options={'maxiter': 200})
-optimal_params = result.x
-print(f"최적 에너지 (noiseless): {result.fun:.6f} hartree\n")
+def compute_energy(params):
+    bound_circuit = ansatz.assign_parameters(params)
+    sv = Statevector(bound_circuit)
+    sv_array = sv.data
+    return float(np.real(np.conj(sv_array) @ H_matrix @ sv_array)) + e_nuc
 
-# ============ Step 4: Idle_depol sweep ============
-print("Step 4: Idle_depol sweep...\n")
+rng = np.random.default_rng(42)
+best_energy = np.inf
+best_params = None
 
-idle_depol_values = [0.0, 0.0005, 0.001, 0.0015, 0.002, 0.0025, 0.003, 0.004, 0.005]
-results = {}
-
-for idle_depol in idle_depol_values:
-    print(f"  idle_depol = {idle_depol:.4f}...")
+for restart in range(3):
+    if restart == 0:
+        x0 = np.zeros(n_params)
+    else:
+        x0 = rng.normal(0, 0.1, n_params)
     
+    result = minimize(compute_energy, x0, method="SLSQP",
+                     options={"maxiter": 500, "ftol": 1e-10})
+    if result.fun < best_energy:
+        best_energy = result.fun
+        best_params = result.x
+
+e_opt = best_energy
+gap = abs(e_opt - e_fci)
+print(f"  최적 에너지 (noiseless): {e_opt:+.6f} hartree")
+print(f"  FCI 대비 차이: {gap*1000:.2f} mHa")
+
+# ==================================================================
+print("[4] 회로 준비...")
+bound_circuit = ansatz.assign_parameters(best_params)
+hw_circuit = transpile(bound_circuit.decompose(reps=4),
+                       basis_gates=['rz', 'sx', 'x', 'cx'],
+                       optimization_level=1)
+print(f"  circuit depth: {hw_circuit.depth()}")
+
+# ==================================================================
+print("[5] Idle_depol sweep...")
+
+idle_depol_values = [0.0, 0.0005, 0.001, 0.0015, 0.002, 0.0023, 0.003, 0.004, 0.005]
+results = []
+
+for idle_p in idle_depol_values:
     # Noise model
-    noise_model = NoiseModel()
+    nm = NoiseModel(basis_gates=['rz', 'sx', 'x', 'cx', 'id'])
     
-    if idle_depol > 0:
-        noise_model.add_all_qubit_quantum_error(
-            depolarizing_error(idle_depol, 1), ['id']
-        )
+    nm.add_all_qubit_quantum_error(depolarizing_error(0.0008, 1), ['sx', 'x'])
+    nm.add_all_qubit_quantum_error(depolarizing_error(0.008, 2), ['cx'])
+    nm.add_all_qubit_quantum_error(depolarizing_error(idle_p, 1), ['id'])
     
-    # Gate noise
-    noise_model.add_all_qubit_quantum_error(
-        depolarizing_error(0.008, 1),
-        ['u1', 'u2', 'u3', 'x', 'y', 'z', 'h', 's', 't']
-    )
-    noise_model.add_all_qubit_quantum_error(
-        depolarizing_error(0.008, 2), ['cx']
-    )
+    # Density matrix simulator
+    sim = AerSimulator(method='density_matrix', noise_model=nm,
+                       basis_gates=['rz', 'sx', 'x', 'cx', 'id'])
     
-    # Readout noise
-    noise_model.add_all_qubit_quantum_error(
-        depolarizing_error(0.02, 1), ['measure']
-    )
+    qc = hw_circuit.copy()
+    qc.save_density_matrix()
     
-    # Noisy simulation
-    simulator = AerSimulator(method='statevector', noise_model=noise_model)
+    qc_t = transpile(qc, sim, basis_gates=['rz', 'sx', 'x', 'cx', 'id'],
+                     optimization_level=0)
     
-    # 회로 구성 (measurement 추가 후 1000 shots 샘플링)
-    qc = ansatz.assign_parameters(optimal_params)
-    qc.measure_all()
+    job = sim.run(qc_t, shots=1)
+    rho = np.asarray(job.result().data(0)['density_matrix'])
     
-    job = simulator.run(qc, shots=1000)
-    counts = job.result().get_counts()
+    # E = Tr(rho * H)
+    e_noisy = np.real(np.trace(rho @ H_matrix)) + e_nuc
+    delta_e = abs(e_noisy - e_fci)
     
-    # Hamiltonian expectation value 근사 (실제론 복잡하지만, 여기선 간단히)
-    # 대신 noisy parameter로 에너지 다시 계산
-    qc_noisy = ansatz.assign_parameters(optimal_params)
-    dm_noisy = DensityMatrix.from_instruction(qc_noisy)
+    results.append({
+        'idle_depol': idle_p,
+        'Energy (hartree)': e_noisy,
+        'Error ΔE (hartree)': delta_e,
+        'Error %': delta_e / abs(e_fci) * 100
+    })
     
-    # Idle noise의 영향을 근사: depolarization factor 적용
-    # (정확하진 않지만, idle_depol의 상대적 영향을 볼 수 있음)
-    depol_factor = 1.0 - (idle_depol * 100)  # 근사
-    e_measured = result.fun * (1.0 + idle_depol * 10)  # idle이 커질수록 에러 증가
-    
-    error = abs(e_measured - e_fci)
-    error_percent = (error / abs(e_fci)) * 100
-    
-    results[idle_depol] = {
-        "Energy": e_measured,
-        "Error": error,
-        "Error %": error_percent
-    }
-    
-    print(f"    E = {e_measured:.6f}, ΔE = {error:.6f}")
+    print(f"  idle_depol = {idle_p:.4f}... E = {e_noisy:+.6f}, ΔE = {delta_e:.6f}")
 
-print()
-
-# ============ Step 5: 결과 정리 ============
-df = pd.DataFrame([
-    {
-        "idle_depol": idle_depol,
-        "Energy (hartree)": results[idle_depol]["Energy"],
-        "Error ΔE (hartree)": results[idle_depol]["Error"],
-        "Error %": results[idle_depol]["Error %"]
-    }
-    for idle_depol in idle_depol_values
-])
-
-print("="*100)
+df = pd.DataFrame(results)
+print("\n" + "="*90)
 print(df.to_string(index=False))
-print("="*100 + "\n")
+print("="*90)
 
 df.to_csv("h2_idle_depol_sweep.csv", index=False)
+print("h2_idle_depol_sweep.csv 저장됨")
 
-# ============ Step 6: 그래프 ============
+# Sanity check
+errors = df['Error ΔE (hartree)'].values
+is_monotonic = np.all(np.diff(errors) >= -1e-7)
+if is_monotonic:
+    print("✓ Error는 단조 증가합니다 (정상)")
+else:
+    print("⚠️  Error가 단조 증가하지 않습니다 (버그 의심)")
+
+# 그래프
 fig, ax = plt.subplots(figsize=(10, 6))
-ax.plot(idle_depol_values, [results[x]["Error"] for x in idle_depol_values], 
-        'o-', linewidth=2, markersize=8, color='blue')
-ax.axvline(x=0.00145, color='red', linestyle='--', linewidth=2, label='Computed idle_depol (0.00145)')
+ax.plot(df['idle_depol'], df['Error %'], 'o-', lw=2, ms=8, color='C0')
 ax.set_xlabel('idle_depol', fontsize=12)
-ax.set_ylabel('Energy Error ΔE (hartree)', fontsize=12)
-ax.set_title('H2 VQE: idle_depol Sensitivity', fontsize=14)
-ax.grid(True, alpha=0.3)
-ax.legend()
+ax.set_ylabel('|E - E_FCI| / |E_FCI| (%)', fontsize=12)
+ax.set_title('H2 VQE: Idle Noise Sensitivity (Density Matrix)', fontsize=13)
+ax.grid(alpha=0.3)
 plt.tight_layout()
-plt.savefig('h2_idle_depol_sweep.png')
-print("그래프 저장: h2_idle_depol_sweep.png")
+plt.savefig('h2_idle_depol_sweep.png', dpi=150)
+print("h2_idle_depol_sweep.png 저장됨")
