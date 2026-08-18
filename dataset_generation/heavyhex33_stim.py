@@ -1,52 +1,3 @@
-#!/usr/bin/env python3
-"""
-Heavy-Hex (3,3) abstract Stim circuit generator
-===============================================
-Builds the abstract-level circuit with 17 data + 8 ancilla qubits (no bridges).
-
-Bit-level agreement contract with the hardware circuit
-(heavyhex_depth7_opt_for_37q.HeavyHex37QDepthOpt):
-  * per-cycle measurement order of the 16 checks
-      = heavyhex_depth7_opt_for_37q.CYCLE_ORDER (imported)
-  * stabilizer support of each check = heavyhex_37q.CHECK_DEFS (imported)
-  * syn bit index = cyc * 16 + j  (j = position in CYCLE_ORDER) — same as HW
-
-MR (measure+reset) vs no-reset equivalence (top-level contract, README §2):
-  Stim treats every ancilla with MR, so each raw measurement bit IS the check
-  value. The hardware never resets its ancillas, so a raw bit is the XOR
-  accumulation with the same ancilla's previous measurement; the per-ancilla
-  XOR chain in heavyhex_37q.check_values() (raw_j ^ raw_{j-1}) recovers the
-  check value. Therefore the two streams are **identical at the check-value
-  level**:
-      Stim:      value[name][cyc] = raw_stim[cyc*16 + j]
-      Hardware:  value[name][cyc] = check_values(raw_hw)[name][:, cyc]
-  This equivalence is enforced by verification/verify_equivalence.py.
-
-Detector definitions:
-  * Z-check: deterministically 0 for the initial state |0>_L, so detectors
-    exist from cycle 0 on: cycle 0 compares the value against the
-    deterministic 0 (i.e. the value itself), and cycles >= 1 compare
-    consecutive cycles (temporal XOR, the standard memory-experiment
-    definition).
-  * X-check: the first measurement is random -> only cycle-to-cycle XOR is a
-    detector (from cycle 1 on).
-  * Final: 8 Z-detectors based on the final data measurement
-    (support parity ^ last Z-check value).
-  * Observable: logical Z = parity of data [69, 87, 105]
-    (converted to DATA_PHYS indices).
-
-Noise model:
-    - inject Error_Type ("X"/"Z") errors on data qubits with probability
-      p (= Error_Rate) right after the initial reset
-      (a deterministic per-shot Bernoulli(p) mask is statistically
-       identical to the X_ERROR(p) probabilistic channel)
-    - background noise profile (noise_profiles):
-        data_depol: DEPOLARIZE1 on data at the start of each cycle
-        gate_depol: DEPOLARIZE2 after each CX, DEPOLARIZE1 after each H
-        meas_flip : X_ERROR right before measurement
-        reset_flip: X_ERROR right after reset
-"""
-
 import json
 import sys
 from pathlib import Path
@@ -97,7 +48,7 @@ with open(_ROOT / "noise_profiles.json") as _f:
 ALL_NOISE = list(_JSON_PROFILES)
 NOISE_PROFILES = {
     "ideal/dp0_mf0_rf0_gd0": {
-        "data_depol": 0.0, "meas_flip": 0.0, "reset_flip": 0.0, "gate_depol": 0.0},
+        "data_depol": 0.0, "meas_flip": 0.0, "reset_flip": 0.0, "gate_depol": 0.0, "idle_depol": 0.0},
     **_JSON_PROFILES,
 }
 
@@ -111,7 +62,7 @@ def noise_tag(noise_profile):
         return noise_profile.split("/")[-1]
     p = noise_profile
     return (f"dp{p['data_depol']}_mf{p['meas_flip']}"
-            f"_rf{p['reset_flip']}_gd{p['gate_depol']}")
+            f"_rf{p['reset_flip']}_gd{p['gate_depol']}_id{p.get('idle_depol', 0)}")
 
 # ------------------------------------------------------------------
 # 2D diamond embedding: ancilla -> (row-pair, col) on a 4x5 grid,
@@ -184,6 +135,7 @@ def build_stim_circuit(num_cycles=3, noise_type="X", p=0.0,
             else dict(noise_profile))
     dp, mf = prof["data_depol"], prof["meas_flip"]
     rf, gd = prof["reset_flip"], prof["gate_depol"]
+    id_p = prof.get("idle_depol", 0.0)
 
     data = list(range(NUM_DATA))
     ancs = [AIDX[a] for a in ANC_PHYS]
@@ -200,15 +152,19 @@ def build_stim_circuit(num_cycles=3, noise_type="X", p=0.0,
     for cyc in range(num_cycles):
         if dp > 0:
             c.append("DEPOLARIZE1", data, dp)
+        
         for name in CYCLE_ORDER:
             ctype, support, anc_phys, _ = CHECK_DEFS[name]
             a = AIDX[anc_phys]
+            
             if ctype == "Z":
+                # Z-check: CX from data to ancilla
                 for qp in support:
                     c.append("CX", [DIDX[qp], a])
                     if gd > 0:
                         c.append("DEPOLARIZE2", [DIDX[qp], a], gd)
             else:
+                # X-check: H on ancilla, then CX from ancilla to data, then H
                 c.append("H", [a])
                 if gd > 0:
                     c.append("DEPOLARIZE1", [a], gd)
@@ -219,11 +175,22 @@ def build_stim_circuit(num_cycles=3, noise_type="X", p=0.0,
                 c.append("H", [a])
                 if gd > 0:
                     c.append("DEPOLARIZE1", [a], gd)
+            
+            # Idle noise on qubits not involved in this check
+            if id_p > 0:
+                active_qubits = set([a] + [DIDX[qp] for qp in support])
+                idle_data = [dq for dq in data if dq not in active_qubits]
+                idle_ancs = [aq for aq in ancs if aq not in active_qubits]
+                idle_qubits = idle_data + idle_ancs
+                if idle_qubits:
+                    c.append("DEPOLARIZE1", idle_qubits, id_p)
+            
             if mf > 0:
                 c.append("X_ERROR", [a], mf)
             c.append("MR", [a])
             if rf > 0:
                 c.append("X_ERROR", [a], rf)
+        
         if inject is not None and inject[2] == cyc:
             pauli, dq, _ = inject
             c.append(pauli.upper(), [DIDX[dq]])

@@ -1,0 +1,20 @@
+nohup: ignoring input
+train_options.json: {'cycles': 3, 'epochs': 30, 'patience': 5, 'batch_size': 2048, 'lr': 0.001, 'aux_weight': 0.5, 'pos_weight': 'none', 'mwpm': False}
+NOTE: no coupling_*.json and no keys.json — skipping coupling fetch (training doesn't need it; hardware/tests do).
+model module: model.cnn_skeleton | device: cuda
+
+======================================================================
+>>> realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0 | p=0.01 | X | cycles=3
+Traceback (most recent call last):
+  File "/home/seyoung/.anaconda/Heavyhex2/train.py", line 387, in <module>
+    main()
+  File "/home/seyoung/.anaconda/Heavyhex2/train.py", line 349, in main
+    rows.append(train_one(ra, mod, noise, p, et, device))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/seyoung/.anaconda/Heavyhex2/train.py", line 203, in train_one
+    Xtr, yqtr, yltr = load_split(args.data_dir, noise, "train", args.cycles,
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/seyoung/.anaconda/Heavyhex2/model/data.py", line 33, in load_split
+    feats = torch.from_numpy(np.ascontiguousarray(d["features"])).to(device)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.12 GiB. GPU 0 has a total capacity of 10.56 GiB of which 1015.31 MiB is free. Process 1358828 has 1.27 GiB memory in use. Process 1358830 has 1.27 GiB memory in use. Process 1358832 has 1.27 GiB memory in use. Process 1358834 has 1.27 GiB memory in use. Including non-PyTorch memory, this process has 156.00 MiB memory in use. Process 1358829 has 1.27 GiB memory in use. Process 1358831 has 1.27 GiB memory in use. Process 1358833 has 156.00 MiB memory in use. Process 1358827 has 1.46 GiB memory in use. Of the allocated memory 0 bytes is allocated by PyTorch, and 0 bytes is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

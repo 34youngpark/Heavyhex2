@@ -1,0 +1,21 @@
+nohup: ignoring input
+train_options.json: {'cycles': 3, 'epochs': 30, 'patience': 5, 'batch_size': 2048, 'lr': 0.001, 'aux_weight': 0.5, 'pos_weight': 'none', 'mwpm': False}
+NOTE: no coupling_*.json and no keys.json — skipping coupling fetch (training doesn't need it; hardware/tests do).
+model module: model.cnn_skeleton | device: cuda
+
+======================================================================
+>>> realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0025 | p=0.01 | X | cycles=3
+    train (10000000, 6, 4, 5)  val (100000, 6, 4, 5)  -> cuda
+Traceback (most recent call last):
+  File "/home/seyoung/.anaconda/Heavyhex2/train.py", line 387, in <module>
+    main()
+  File "/home/seyoung/.anaconda/Heavyhex2/train.py", line 349, in main
+    rows.append(train_one(ra, mod, noise, p, et, device))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/seyoung/.anaconda/Heavyhex2/train.py", line 259, in train_one
+    for xb, yq, yl in train_loader:
+                      ^^^^^^^^^^^^
+  File "/home/seyoung/.anaconda/Heavyhex2/model/data.py", line 51, in __iter__
+    idx = torch.randperm(self.dataset_len, device=self.tensors[0].device)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 78.00 MiB. GPU 0 has a total capacity of 10.56 GiB of which 37.31 MiB is free. Process 1358828 has 1.56 GiB memory in use. Process 1358830 has 2.86 GiB memory in use. Process 1358832 has 1.56 GiB memory in use. Process 1358834 has 1.46 GiB memory in use. Process 1358829 has 1.44 GiB memory in use. Including non-PyTorch memory, this process has 1.46 GiB memory in use. Of the allocated memory 1.30 GiB is allocated by PyTorch, and 12.04 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)

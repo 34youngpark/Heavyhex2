@@ -1,0 +1,219 @@
+nohup: ignoring input
+train_options.json: {'cycles': 3, 'epochs': 30, 'patience': 5, 'batch_size': 2048, 'lr': 0.001, 'aux_weight': 0.5, 'pos_weight': 'none', 'mwpm': False}
+NOTE: no coupling_*.json and no keys.json — skipping coupling fetch (training doesn't need it; hardware/tests do).
+model module: model.cnn_skeleton | device: cuda
+
+======================================================================
+>>> realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0 | p=0.01 | X | cycles=3
+    train (10000000, 6, 4, 5)  val (100000, 6, 4, 5)  -> cuda
+    [Ep 01] loss 0.4433/0.4331 | ECR (diagnostic, sim-only) 24.57% | Acc 89.11% | LER 0.1005 (raw 0.1736) | parity_LER (diagnostic) 0.1079 | LER/MWPM ratio N/A | pat 0
+    [Ep 02] loss 0.4351/0.4319 | ECR (diagnostic, sim-only) 25.86% | Acc 89.20% | LER 0.0999 (raw 0.1736) | parity_LER (diagnostic) 0.1061 | LER/MWPM ratio N/A | pat 0
+    [Ep 03] loss 0.4331/0.4305 | ECR (diagnostic, sim-only) 25.05% | Acc 89.24% | LER 0.0996 (raw 0.1736) | parity_LER (diagnostic) 0.1052 | LER/MWPM ratio N/A | pat 0
+    [Ep 04] loss 0.4318/0.4293 | ECR (diagnostic, sim-only) 25.84% | Acc 89.27% | LER 0.0993 (raw 0.1736) | parity_LER (diagnostic) 0.1042 | LER/MWPM ratio N/A | pat 0
+    [Ep 05] loss 0.4310/0.4289 | ECR (diagnostic, sim-only) 25.64% | Acc 89.28% | LER 0.0989 (raw 0.1736) | parity_LER (diagnostic) 0.1050 | LER/MWPM ratio N/A | pat 0
+    [Ep 06] loss 0.4303/0.4289 | ECR (diagnostic, sim-only) 26.01% | Acc 89.29% | LER 0.0990 (raw 0.1736) | parity_LER (diagnostic) 0.1043 | LER/MWPM ratio N/A | pat 0
+    [Ep 07] loss 0.4297/0.4288 | ECR (diagnostic, sim-only) 26.02% | Acc 89.29% | LER 0.0994 (raw 0.1736) | parity_LER (diagnostic) 0.1056 | LER/MWPM ratio N/A | pat 1
+    [Ep 08] loss 0.4293/0.4284 | ECR (diagnostic, sim-only) 26.24% | Acc 89.29% | LER 0.0991 (raw 0.1736) | parity_LER (diagnostic) 0.1041 | LER/MWPM ratio N/A | pat 2
+    [Ep 09] loss 0.4289/0.4285 | ECR (diagnostic, sim-only) 26.34% | Acc 89.30% | LER 0.0991 (raw 0.1736) | parity_LER (diagnostic) 0.1049 | LER/MWPM ratio N/A | pat 3
+    [Ep 10] loss 0.4285/0.4283 | ECR (diagnostic, sim-only) 25.78% | Acc 89.30% | LER 0.0990 (raw 0.1736) | parity_LER (diagnostic) 0.1056 | LER/MWPM ratio N/A | pat 4
+    -> early stopping
+
+======================================================================
+Summary (best epoch per config; official metric = head-LER, 'ler' column)
+   noise |        p |     type |    epoch | ECR (diagnostic, sim-only) |      acc |  raw_ler |      ler | parity_LER (diagnostic) | LER/MWPM ratio
+realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0 |   0.0100 |        X |        5 |                     0.2564 |   0.8928 |   0.1736 |   0.0989 |                  0.1050 |            N/A
+train_options.json: {'cycles': 3, 'epochs': 30, 'patience': 5, 'batch_size': 2048, 'lr': 0.001, 'aux_weight': 0.5, 'pos_weight': 'none', 'mwpm': False}
+NOTE: no coupling_*.json and no keys.json — skipping coupling fetch (training doesn't need it; hardware/tests do).
+model module: model.cnn_skeleton | device: cuda
+
+======================================================================
+>>> realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0005 | p=0.01 | X | cycles=3
+    train (10000000, 6, 4, 5)  val (100000, 6, 4, 5)  -> cuda
+    [Ep 01] loss 0.4962/0.4806 | ECR (diagnostic, sim-only) 21.83% | Acc 87.51% | LER 0.1177 (raw 0.1937) | parity_LER (diagnostic) 0.1230 | LER/MWPM ratio N/A | pat 0
+    [Ep 02] loss 0.4877/0.4785 | ECR (diagnostic, sim-only) 23.55% | Acc 87.61% | LER 0.1162 (raw 0.1937) | parity_LER (diagnostic) 0.1212 | LER/MWPM ratio N/A | pat 0
+    [Ep 03] loss 0.4857/0.4772 | ECR (diagnostic, sim-only) 23.74% | Acc 87.66% | LER 0.1161 (raw 0.1937) | parity_LER (diagnostic) 0.1199 | LER/MWPM ratio N/A | pat 0
+    [Ep 04] loss 0.4844/0.4773 | ECR (diagnostic, sim-only) 24.40% | Acc 87.68% | LER 0.1159 (raw 0.1937) | parity_LER (diagnostic) 0.1199 | LER/MWPM ratio N/A | pat 0
+    [Ep 05] loss 0.4836/0.4770 | ECR (diagnostic, sim-only) 24.10% | Acc 87.68% | LER 0.1153 (raw 0.1937) | parity_LER (diagnostic) 0.1199 | LER/MWPM ratio N/A | pat 0
+    [Ep 06] loss 0.4830/0.4767 | ECR (diagnostic, sim-only) 24.48% | Acc 87.72% | LER 0.1148 (raw 0.1937) | parity_LER (diagnostic) 0.1195 | LER/MWPM ratio N/A | pat 0
+    [Ep 07] loss 0.4824/0.4762 | ECR (diagnostic, sim-only) 24.62% | Acc 87.72% | LER 0.1156 (raw 0.1937) | parity_LER (diagnostic) 0.1198 | LER/MWPM ratio N/A | pat 0
+    [Ep 08] loss 0.4819/0.4761 | ECR (diagnostic, sim-only) 24.04% | Acc 87.71% | LER 0.1160 (raw 0.1937) | parity_LER (diagnostic) 0.1194 | LER/MWPM ratio N/A | pat 1
+    [Ep 09] loss 0.4815/0.4761 | ECR (diagnostic, sim-only) 24.10% | Acc 87.71% | LER 0.1154 (raw 0.1937) | parity_LER (diagnostic) 0.1197 | LER/MWPM ratio N/A | pat 2
+    [Ep 10] loss 0.4811/0.4758 | ECR (diagnostic, sim-only) 24.74% | Acc 87.73% | LER 0.1154 (raw 0.1937) | parity_LER (diagnostic) 0.1197 | LER/MWPM ratio N/A | pat 3
+    [Ep 11] loss 0.4808/0.4762 | ECR (diagnostic, sim-only) 24.65% | Acc 87.72% | LER 0.1155 (raw 0.1937) | parity_LER (diagnostic) 0.1194 | LER/MWPM ratio N/A | pat 4
+    -> early stopping
+
+======================================================================
+Summary (best epoch per config; official metric = head-LER, 'ler' column)
+   noise |        p |     type |    epoch | ECR (diagnostic, sim-only) |      acc |  raw_ler |      ler | parity_LER (diagnostic) | LER/MWPM ratio
+realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0005 |   0.0100 |        X |        6 |                     0.2448 |   0.8772 |   0.1937 |   0.1148 |                  0.1195 |            N/A
+train_options.json: {'cycles': 3, 'epochs': 30, 'patience': 5, 'batch_size': 2048, 'lr': 0.001, 'aux_weight': 0.5, 'pos_weight': 'none', 'mwpm': False}
+NOTE: no coupling_*.json and no keys.json — skipping coupling fetch (training doesn't need it; hardware/tests do).
+model module: model.cnn_skeleton | device: cuda
+
+======================================================================
+>>> realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.001 | p=0.01 | X | cycles=3
+    train (10000000, 6, 4, 5)  val (100000, 6, 4, 5)  -> cuda
+    [Ep 01] loss 0.5461/0.5350 | ECR (diagnostic, sim-only) 21.66% | Acc 85.90% | LER 0.1394 (raw 0.2206) | parity_LER (diagnostic) 0.1447 | LER/MWPM ratio N/A | pat 0
+    [Ep 02] loss 0.5377/0.5333 | ECR (diagnostic, sim-only) 21.68% | Acc 85.97% | LER 0.1386 (raw 0.2206) | parity_LER (diagnostic) 0.1435 | LER/MWPM ratio N/A | pat 0
+    [Ep 03] loss 0.5357/0.5319 | ECR (diagnostic, sim-only) 22.83% | Acc 86.02% | LER 0.1385 (raw 0.2206) | parity_LER (diagnostic) 0.1437 | LER/MWPM ratio N/A | pat 0
+    [Ep 04] loss 0.5346/0.5309 | ECR (diagnostic, sim-only) 22.69% | Acc 86.04% | LER 0.1381 (raw 0.2206) | parity_LER (diagnostic) 0.1419 | LER/MWPM ratio N/A | pat 0
+    [Ep 05] loss 0.5336/0.5303 | ECR (diagnostic, sim-only) 23.48% | Acc 86.07% | LER 0.1378 (raw 0.2206) | parity_LER (diagnostic) 0.1424 | LER/MWPM ratio N/A | pat 0
+    [Ep 06] loss 0.5328/0.5307 | ECR (diagnostic, sim-only) 22.94% | Acc 86.06% | LER 0.1379 (raw 0.2206) | parity_LER (diagnostic) 0.1427 | LER/MWPM ratio N/A | pat 0
+    [Ep 07] loss 0.5322/0.5304 | ECR (diagnostic, sim-only) 22.79% | Acc 86.08% | LER 0.1378 (raw 0.2206) | parity_LER (diagnostic) 0.1427 | LER/MWPM ratio N/A | pat 1
+    [Ep 08] loss 0.5318/0.5301 | ECR (diagnostic, sim-only) 23.34% | Acc 86.08% | LER 0.1376 (raw 0.2206) | parity_LER (diagnostic) 0.1422 | LER/MWPM ratio N/A | pat 2
+    [Ep 09] loss 0.5313/0.5303 | ECR (diagnostic, sim-only) 23.58% | Acc 86.09% | LER 0.1373 (raw 0.2206) | parity_LER (diagnostic) 0.1427 | LER/MWPM ratio N/A | pat 0
+    [Ep 10] loss 0.5309/0.5305 | ECR (diagnostic, sim-only) 22.99% | Acc 86.08% | LER 0.1377 (raw 0.2206) | parity_LER (diagnostic) 0.1422 | LER/MWPM ratio N/A | pat 0
+    [Ep 11] loss 0.5306/0.5299 | ECR (diagnostic, sim-only) 23.73% | Acc 86.09% | LER 0.1378 (raw 0.2206) | parity_LER (diagnostic) 0.1419 | LER/MWPM ratio N/A | pat 1
+    [Ep 12] loss 0.5303/0.5301 | ECR (diagnostic, sim-only) 23.62% | Acc 86.09% | LER 0.1377 (raw 0.2206) | parity_LER (diagnostic) 0.1428 | LER/MWPM ratio N/A | pat 2
+    [Ep 13] loss 0.5300/0.5301 | ECR (diagnostic, sim-only) 23.26% | Acc 86.08% | LER 0.1377 (raw 0.2206) | parity_LER (diagnostic) 0.1415 | LER/MWPM ratio N/A | pat 3
+    [Ep 14] loss 0.5297/0.5304 | ECR (diagnostic, sim-only) 22.89% | Acc 86.07% | LER 0.1380 (raw 0.2206) | parity_LER (diagnostic) 0.1425 | LER/MWPM ratio N/A | pat 4
+    -> early stopping
+
+======================================================================
+Summary (best epoch per config; official metric = head-LER, 'ler' column)
+   noise |        p |     type |    epoch | ECR (diagnostic, sim-only) |      acc |  raw_ler |      ler | parity_LER (diagnostic) | LER/MWPM ratio
+realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.001 |   0.0100 |        X |        9 |                     0.2358 |   0.8609 |   0.2206 |   0.1373 |                  0.1427 |            N/A
+train_options.json: {'cycles': 3, 'epochs': 30, 'patience': 5, 'batch_size': 2048, 'lr': 0.001, 'aux_weight': 0.5, 'pos_weight': 'none', 'mwpm': False}
+NOTE: no coupling_*.json and no keys.json — skipping coupling fetch (training doesn't need it; hardware/tests do).
+model module: model.cnn_skeleton | device: cuda
+
+======================================================================
+>>> realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0015 | p=0.01 | X | cycles=3
+    train (10000000, 6, 4, 5)  val (100000, 6, 4, 5)  -> cuda
+    [Ep 01] loss 0.5902/0.5801 | ECR (diagnostic, sim-only) 21.96% | Acc 84.43% | LER 0.1596 (raw 0.2420) | parity_LER (diagnostic) 0.1641 | LER/MWPM ratio N/A | pat 0
+    [Ep 02] loss 0.5822/0.5771 | ECR (diagnostic, sim-only) 21.89% | Acc 84.49% | LER 0.1584 (raw 0.2420) | parity_LER (diagnostic) 0.1628 | LER/MWPM ratio N/A | pat 0
+    [Ep 03] loss 0.5803/0.5760 | ECR (diagnostic, sim-only) 22.66% | Acc 84.52% | LER 0.1570 (raw 0.2420) | parity_LER (diagnostic) 0.1614 | LER/MWPM ratio N/A | pat 0
+    [Ep 04] loss 0.5791/0.5755 | ECR (diagnostic, sim-only) 21.79% | Acc 84.55% | LER 0.1576 (raw 0.2420) | parity_LER (diagnostic) 0.1613 | LER/MWPM ratio N/A | pat 0
+    [Ep 05] loss 0.5782/0.5752 | ECR (diagnostic, sim-only) 22.63% | Acc 84.56% | LER 0.1568 (raw 0.2420) | parity_LER (diagnostic) 0.1619 | LER/MWPM ratio N/A | pat 1
+    [Ep 06] loss 0.5776/0.5748 | ECR (diagnostic, sim-only) 22.28% | Acc 84.55% | LER 0.1568 (raw 0.2420) | parity_LER (diagnostic) 0.1609 | LER/MWPM ratio N/A | pat 0
+    [Ep 07] loss 0.5771/0.5745 | ECR (diagnostic, sim-only) 22.92% | Acc 84.56% | LER 0.1570 (raw 0.2420) | parity_LER (diagnostic) 0.1614 | LER/MWPM ratio N/A | pat 0
+    [Ep 08] loss 0.5766/0.5745 | ECR (diagnostic, sim-only) 22.64% | Acc 84.57% | LER 0.1568 (raw 0.2420) | parity_LER (diagnostic) 0.1612 | LER/MWPM ratio N/A | pat 1
+    [Ep 09] loss 0.5762/0.5742 | ECR (diagnostic, sim-only) 22.65% | Acc 84.57% | LER 0.1564 (raw 0.2420) | parity_LER (diagnostic) 0.1611 | LER/MWPM ratio N/A | pat 2
+    [Ep 10] loss 0.5758/0.5745 | ECR (diagnostic, sim-only) 22.46% | Acc 84.58% | LER 0.1572 (raw 0.2420) | parity_LER (diagnostic) 0.1611 | LER/MWPM ratio N/A | pat 0
+    [Ep 11] loss 0.5754/0.5743 | ECR (diagnostic, sim-only) 22.69% | Acc 84.58% | LER 0.1571 (raw 0.2420) | parity_LER (diagnostic) 0.1606 | LER/MWPM ratio N/A | pat 1
+    [Ep 12] loss 0.5751/0.5747 | ECR (diagnostic, sim-only) 22.37% | Acc 84.58% | LER 0.1566 (raw 0.2420) | parity_LER (diagnostic) 0.1609 | LER/MWPM ratio N/A | pat 2
+    [Ep 13] loss 0.5748/0.5748 | ECR (diagnostic, sim-only) 22.62% | Acc 84.57% | LER 0.1574 (raw 0.2420) | parity_LER (diagnostic) 0.1612 | LER/MWPM ratio N/A | pat 3
+    [Ep 14] loss 0.5745/0.5748 | ECR (diagnostic, sim-only) 22.87% | Acc 84.58% | LER 0.1566 (raw 0.2420) | parity_LER (diagnostic) 0.1610 | LER/MWPM ratio N/A | pat 4
+    -> early stopping
+
+======================================================================
+Summary (best epoch per config; official metric = head-LER, 'ler' column)
+   noise |        p |     type |    epoch | ECR (diagnostic, sim-only) |      acc |  raw_ler |      ler | parity_LER (diagnostic) | LER/MWPM ratio
+realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0015 |   0.0100 |        X |        9 |                     0.2265 |   0.8457 |   0.2420 |   0.1564 |                  0.1611 |            N/A
+train_options.json: {'cycles': 3, 'epochs': 30, 'patience': 5, 'batch_size': 2048, 'lr': 0.001, 'aux_weight': 0.5, 'pos_weight': 'none', 'mwpm': False}
+NOTE: no coupling_*.json and no keys.json — skipping coupling fetch (training doesn't need it; hardware/tests do).
+model module: model.cnn_skeleton | device: cuda
+
+======================================================================
+>>> realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.002 | p=0.01 | X | cycles=3
+    train (10000000, 6, 4, 5)  val (100000, 6, 4, 5)  -> cuda
+    [Ep 01] loss 0.6332/0.6215 | ECR (diagnostic, sim-only) 19.95% | Acc 82.94% | LER 0.1784 (raw 0.2584) | parity_LER (diagnostic) 0.1840 | LER/MWPM ratio N/A | pat 0
+    [Ep 02] loss 0.6251/0.6197 | ECR (diagnostic, sim-only) 20.70% | Acc 83.00% | LER 0.1771 (raw 0.2584) | parity_LER (diagnostic) 0.1838 | LER/MWPM ratio N/A | pat 0
+    [Ep 03] loss 0.6231/0.6184 | ECR (diagnostic, sim-only) 21.21% | Acc 83.06% | LER 0.1766 (raw 0.2584) | parity_LER (diagnostic) 0.1827 | LER/MWPM ratio N/A | pat 0
+    [Ep 04] loss 0.6219/0.6180 | ECR (diagnostic, sim-only) 21.79% | Acc 83.07% | LER 0.1765 (raw 0.2584) | parity_LER (diagnostic) 0.1825 | LER/MWPM ratio N/A | pat 0
+    [Ep 05] loss 0.6210/0.6179 | ECR (diagnostic, sim-only) 21.57% | Acc 83.09% | LER 0.1768 (raw 0.2584) | parity_LER (diagnostic) 0.1804 | LER/MWPM ratio N/A | pat 0
+    [Ep 06] loss 0.6203/0.6173 | ECR (diagnostic, sim-only) 22.02% | Acc 83.11% | LER 0.1765 (raw 0.2584) | parity_LER (diagnostic) 0.1804 | LER/MWPM ratio N/A | pat 1
+    [Ep 07] loss 0.6197/0.6171 | ECR (diagnostic, sim-only) 21.97% | Acc 83.11% | LER 0.1767 (raw 0.2584) | parity_LER (diagnostic) 0.1806 | LER/MWPM ratio N/A | pat 2
+    [Ep 08] loss 0.6193/0.6175 | ECR (diagnostic, sim-only) 21.91% | Acc 83.11% | LER 0.1765 (raw 0.2584) | parity_LER (diagnostic) 0.1811 | LER/MWPM ratio N/A | pat 3
+    [Ep 09] loss 0.6188/0.6172 | ECR (diagnostic, sim-only) 21.94% | Acc 83.12% | LER 0.1766 (raw 0.2584) | parity_LER (diagnostic) 0.1809 | LER/MWPM ratio N/A | pat 4
+    -> early stopping
+
+======================================================================
+Summary (best epoch per config; official metric = head-LER, 'ler' column)
+   noise |        p |     type |    epoch | ECR (diagnostic, sim-only) |      acc |  raw_ler |      ler | parity_LER (diagnostic) | LER/MWPM ratio
+realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.002 |   0.0100 |        X |        4 |                     0.2179 |   0.8307 |   0.2584 |   0.1765 |                  0.1825 |            N/A
+train_options.json: {'cycles': 3, 'epochs': 30, 'patience': 5, 'batch_size': 2048, 'lr': 0.001, 'aux_weight': 0.5, 'pos_weight': 'none', 'mwpm': False}
+NOTE: no coupling_*.json and no keys.json — skipping coupling fetch (training doesn't need it; hardware/tests do).
+model module: model.cnn_skeleton | device: cuda
+
+======================================================================
+>>> realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0025 | p=0.01 | X | cycles=3
+    train (10000000, 6, 4, 5)  val (100000, 6, 4, 5)  -> cuda
+    [Ep 01] loss 0.6718/0.6584 | ECR (diagnostic, sim-only) 19.17% | Acc 81.61% | LER 0.1953 (raw 0.2777) | parity_LER (diagnostic) 0.2011 | LER/MWPM ratio N/A | pat 0
+    [Ep 02] loss 0.6640/0.6558 | ECR (diagnostic, sim-only) 20.51% | Acc 81.72% | LER 0.1944 (raw 0.2777) | parity_LER (diagnostic) 0.1989 | LER/MWPM ratio N/A | pat 0
+    [Ep 03] loss 0.6620/0.6552 | ECR (diagnostic, sim-only) 20.87% | Acc 81.75% | LER 0.1946 (raw 0.2777) | parity_LER (diagnostic) 0.1991 | LER/MWPM ratio N/A | pat 0
+    [Ep 04] loss 0.6609/0.6551 | ECR (diagnostic, sim-only) 21.11% | Acc 81.76% | LER 0.1944 (raw 0.2777) | parity_LER (diagnostic) 0.1981 | LER/MWPM ratio N/A | pat 1
+    [Ep 05] loss 0.6600/0.6542 | ECR (diagnostic, sim-only) 20.97% | Acc 81.76% | LER 0.1934 (raw 0.2777) | parity_LER (diagnostic) 0.1984 | LER/MWPM ratio N/A | pat 2
+    [Ep 06] loss 0.6593/0.6539 | ECR (diagnostic, sim-only) 20.81% | Acc 81.77% | LER 0.1939 (raw 0.2777) | parity_LER (diagnostic) 0.1979 | LER/MWPM ratio N/A | pat 0
+    [Ep 07] loss 0.6588/0.6537 | ECR (diagnostic, sim-only) 21.35% | Acc 81.79% | LER 0.1937 (raw 0.2777) | parity_LER (diagnostic) 0.1983 | LER/MWPM ratio N/A | pat 1
+    [Ep 08] loss 0.6583/0.6534 | ECR (diagnostic, sim-only) 21.37% | Acc 81.79% | LER 0.1930 (raw 0.2777) | parity_LER (diagnostic) 0.1977 | LER/MWPM ratio N/A | pat 2
+    [Ep 09] loss 0.6579/0.6535 | ECR (diagnostic, sim-only) 21.34% | Acc 81.80% | LER 0.1933 (raw 0.2777) | parity_LER (diagnostic) 0.1977 | LER/MWPM ratio N/A | pat 0
+    [Ep 10] loss 0.6575/0.6534 | ECR (diagnostic, sim-only) 21.53% | Acc 81.79% | LER 0.1935 (raw 0.2777) | parity_LER (diagnostic) 0.1983 | LER/MWPM ratio N/A | pat 1
+    [Ep 11] loss 0.6572/0.6538 | ECR (diagnostic, sim-only) 21.52% | Acc 81.79% | LER 0.1936 (raw 0.2777) | parity_LER (diagnostic) 0.1984 | LER/MWPM ratio N/A | pat 2
+    [Ep 12] loss 0.6569/0.6537 | ECR (diagnostic, sim-only) 21.33% | Acc 81.79% | LER 0.1934 (raw 0.2777) | parity_LER (diagnostic) 0.1982 | LER/MWPM ratio N/A | pat 3
+    [Ep 13] loss 0.6565/0.6539 | ECR (diagnostic, sim-only) 21.42% | Acc 81.80% | LER 0.1945 (raw 0.2777) | parity_LER (diagnostic) 0.1983 | LER/MWPM ratio N/A | pat 4
+    -> early stopping
+
+======================================================================
+Summary (best epoch per config; official metric = head-LER, 'ler' column)
+   noise |        p |     type |    epoch | ECR (diagnostic, sim-only) |      acc |  raw_ler |      ler | parity_LER (diagnostic) | LER/MWPM ratio
+realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.0025 |   0.0100 |        X |        8 |                     0.2137 |   0.8179 |   0.2777 |   0.1930 |                  0.1977 |            N/A
+train_options.json: {'cycles': 3, 'epochs': 30, 'patience': 5, 'batch_size': 2048, 'lr': 0.001, 'aux_weight': 0.5, 'pos_weight': 'none', 'mwpm': False}
+NOTE: no coupling_*.json and no keys.json — skipping coupling fetch (training doesn't need it; hardware/tests do).
+model module: model.cnn_skeleton | device: cuda
+
+======================================================================
+>>> realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.003 | p=0.01 | X | cycles=3
+    train (10000000, 6, 4, 5)  val (100000, 6, 4, 5)  -> cuda
+    [Ep 01] loss 0.7091/0.7001 | ECR (diagnostic, sim-only) 19.05% | Acc 80.12% | LER 0.2164 (raw 0.2922) | parity_LER (diagnostic) 0.2228 | LER/MWPM ratio N/A | pat 0
+    [Ep 02] loss 0.7009/0.6974 | ECR (diagnostic, sim-only) 19.19% | Acc 80.21% | LER 0.2145 (raw 0.2922) | parity_LER (diagnostic) 0.2212 | LER/MWPM ratio N/A | pat 0
+    [Ep 03] loss 0.6990/0.6971 | ECR (diagnostic, sim-only) 19.17% | Acc 80.23% | LER 0.2147 (raw 0.2922) | parity_LER (diagnostic) 0.2206 | LER/MWPM ratio N/A | pat 0
+    [Ep 04] loss 0.6977/0.6966 | ECR (diagnostic, sim-only) 19.64% | Acc 80.25% | LER 0.2145 (raw 0.2922) | parity_LER (diagnostic) 0.2200 | LER/MWPM ratio N/A | pat 1
+    [Ep 05] loss 0.6967/0.6952 | ECR (diagnostic, sim-only) 20.43% | Acc 80.28% | LER 0.2132 (raw 0.2922) | parity_LER (diagnostic) 0.2185 | LER/MWPM ratio N/A | pat 0
+    [Ep 06] loss 0.6960/0.6955 | ECR (diagnostic, sim-only) 19.63% | Acc 80.26% | LER 0.2139 (raw 0.2922) | parity_LER (diagnostic) 0.2198 | LER/MWPM ratio N/A | pat 0
+    [Ep 07] loss 0.6955/0.6957 | ECR (diagnostic, sim-only) 20.25% | Acc 80.30% | LER 0.2142 (raw 0.2922) | parity_LER (diagnostic) 0.2201 | LER/MWPM ratio N/A | pat 1
+    [Ep 08] loss 0.6950/0.6952 | ECR (diagnostic, sim-only) 20.37% | Acc 80.30% | LER 0.2142 (raw 0.2922) | parity_LER (diagnostic) 0.2193 | LER/MWPM ratio N/A | pat 2
+    [Ep 09] loss 0.6946/0.6958 | ECR (diagnostic, sim-only) 20.51% | Acc 80.29% | LER 0.2139 (raw 0.2922) | parity_LER (diagnostic) 0.2183 | LER/MWPM ratio N/A | pat 3
+    [Ep 10] loss 0.6942/0.6949 | ECR (diagnostic, sim-only) 20.00% | Acc 80.30% | LER 0.2141 (raw 0.2922) | parity_LER (diagnostic) 0.2188 | LER/MWPM ratio N/A | pat 4
+    -> early stopping
+
+======================================================================
+Summary (best epoch per config; official metric = head-LER, 'ler' column)
+   noise |        p |     type |    epoch | ECR (diagnostic, sim-only) |      acc |  raw_ler |      ler | parity_LER (diagnostic) | LER/MWPM ratio
+realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.003 |   0.0100 |        X |        5 |                     0.2043 |   0.8028 |   0.2922 |   0.2132 |                  0.2185 |            N/A
+train_options.json: {'cycles': 3, 'epochs': 30, 'patience': 5, 'batch_size': 2048, 'lr': 0.001, 'aux_weight': 0.5, 'pos_weight': 'none', 'mwpm': False}
+NOTE: no coupling_*.json and no keys.json — skipping coupling fetch (training doesn't need it; hardware/tests do).
+model module: model.cnn_skeleton | device: cuda
+
+======================================================================
+>>> realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.004 | p=0.01 | X | cycles=3
+    train (10000000, 6, 4, 5)  val (100000, 6, 4, 5)  -> cuda
+    [Ep 01] loss 0.7717/0.7625 | ECR (diagnostic, sim-only) 17.68% | Acc 77.46% | LER 0.2511 (raw 0.3253) | parity_LER (diagnostic) 0.2561 | LER/MWPM ratio N/A | pat 0
+    [Ep 02] loss 0.7645/0.7606 | ECR (diagnostic, sim-only) 18.32% | Acc 77.55% | LER 0.2490 (raw 0.3253) | parity_LER (diagnostic) 0.2542 | LER/MWPM ratio N/A | pat 0
+    [Ep 03] loss 0.7626/0.7598 | ECR (diagnostic, sim-only) 18.60% | Acc 77.59% | LER 0.2486 (raw 0.3253) | parity_LER (diagnostic) 0.2543 | LER/MWPM ratio N/A | pat 0
+    [Ep 04] loss 0.7613/0.7592 | ECR (diagnostic, sim-only) 18.81% | Acc 77.61% | LER 0.2488 (raw 0.3253) | parity_LER (diagnostic) 0.2537 | LER/MWPM ratio N/A | pat 0
+    [Ep 05] loss 0.7604/0.7587 | ECR (diagnostic, sim-only) 19.20% | Acc 77.64% | LER 0.2482 (raw 0.3253) | parity_LER (diagnostic) 0.2539 | LER/MWPM ratio N/A | pat 1
+    [Ep 06] loss 0.7597/0.7586 | ECR (diagnostic, sim-only) 18.86% | Acc 77.63% | LER 0.2479 (raw 0.3253) | parity_LER (diagnostic) 0.2537 | LER/MWPM ratio N/A | pat 0
+    [Ep 07] loss 0.7592/0.7586 | ECR (diagnostic, sim-only) 19.04% | Acc 77.64% | LER 0.2480 (raw 0.3253) | parity_LER (diagnostic) 0.2535 | LER/MWPM ratio N/A | pat 0
+    [Ep 08] loss 0.7588/0.7585 | ECR (diagnostic, sim-only) 19.10% | Acc 77.64% | LER 0.2484 (raw 0.3253) | parity_LER (diagnostic) 0.2545 | LER/MWPM ratio N/A | pat 1
+    [Ep 09] loss 0.7584/0.7585 | ECR (diagnostic, sim-only) 19.12% | Acc 77.64% | LER 0.2482 (raw 0.3253) | parity_LER (diagnostic) 0.2538 | LER/MWPM ratio N/A | pat 2
+    [Ep 10] loss 0.7580/0.7588 | ECR (diagnostic, sim-only) 19.06% | Acc 77.64% | LER 0.2482 (raw 0.3253) | parity_LER (diagnostic) 0.2540 | LER/MWPM ratio N/A | pat 3
+    [Ep 11] loss 0.7576/0.7585 | ECR (diagnostic, sim-only) 19.22% | Acc 77.65% | LER 0.2485 (raw 0.3253) | parity_LER (diagnostic) 0.2536 | LER/MWPM ratio N/A | pat 4
+    -> early stopping
+
+======================================================================
+Summary (best epoch per config; official metric = head-LER, 'ler' column)
+   noise |        p |     type |    epoch | ECR (diagnostic, sim-only) |      acc |  raw_ler |      ler | parity_LER (diagnostic) | LER/MWPM ratio
+realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.004 |   0.0100 |        X |        6 |                     0.1886 |   0.7763 |   0.3253 |   0.2479 |                  0.2537 |            N/A
+train_options.json: {'cycles': 3, 'epochs': 30, 'patience': 5, 'batch_size': 2048, 'lr': 0.001, 'aux_weight': 0.5, 'pos_weight': 'none', 'mwpm': False}
+NOTE: no coupling_*.json and no keys.json — skipping coupling fetch (training doesn't need it; hardware/tests do).
+model module: model.cnn_skeleton | device: cuda
+
+======================================================================
+>>> realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.005 | p=0.01 | X | cycles=3
+    train (10000000, 6, 4, 5)  val (100000, 6, 4, 5)  -> cuda
+    [Ep 01] loss 0.8239/0.8167 | ECR (diagnostic, sim-only) 15.93% | Acc 75.03% | LER 0.2854 (raw 0.3514) | parity_LER (diagnostic) 0.2901 | LER/MWPM ratio N/A | pat 0
+    [Ep 02] loss 0.8176/0.8150 | ECR (diagnostic, sim-only) 16.50% | Acc 75.10% | LER 0.2842 (raw 0.3514) | parity_LER (diagnostic) 0.2901 | LER/MWPM ratio N/A | pat 0
+    [Ep 03] loss 0.8159/0.8140 | ECR (diagnostic, sim-only) 18.00% | Acc 75.15% | LER 0.2834 (raw 0.3514) | parity_LER (diagnostic) 0.2891 | LER/MWPM ratio N/A | pat 0
+    [Ep 04] loss 0.8148/0.8133 | ECR (diagnostic, sim-only) 17.76% | Acc 75.19% | LER 0.2823 (raw 0.3514) | parity_LER (diagnostic) 0.2896 | LER/MWPM ratio N/A | pat 0
+    [Ep 05] loss 0.8140/0.8134 | ECR (diagnostic, sim-only) 18.16% | Acc 75.20% | LER 0.2824 (raw 0.3514) | parity_LER (diagnostic) 0.2878 | LER/MWPM ratio N/A | pat 0
+    [Ep 06] loss 0.8134/0.8130 | ECR (diagnostic, sim-only) 18.09% | Acc 75.20% | LER 0.2832 (raw 0.3514) | parity_LER (diagnostic) 0.2895 | LER/MWPM ratio N/A | pat 1
+    [Ep 07] loss 0.8130/0.8129 | ECR (diagnostic, sim-only) 17.88% | Acc 75.20% | LER 0.2836 (raw 0.3514) | parity_LER (diagnostic) 0.2882 | LER/MWPM ratio N/A | pat 2
+    [Ep 08] loss 0.8126/0.8128 | ECR (diagnostic, sim-only) 17.96% | Acc 75.21% | LER 0.2824 (raw 0.3514) | parity_LER (diagnostic) 0.2886 | LER/MWPM ratio N/A | pat 3
+    [Ep 09] loss 0.8122/0.8130 | ECR (diagnostic, sim-only) 18.32% | Acc 75.21% | LER 0.2830 (raw 0.3514) | parity_LER (diagnostic) 0.2881 | LER/MWPM ratio N/A | pat 4
+    -> early stopping
+
+======================================================================
+Summary (best epoch per config; official metric = head-LER, 'ler' column)
+   noise |        p |     type |    epoch | ECR (diagnostic, sim-only) |      acc |  raw_ler |      ler | parity_LER (diagnostic) | LER/MWPM ratio
+realistic/dp0.001_mf0.01_rf0.01_gd0.008_id0.005 |   0.0100 |        X |        4 |                     0.1776 |   0.7519 |   0.3514 |   0.2823 |                  0.2896 |            N/A

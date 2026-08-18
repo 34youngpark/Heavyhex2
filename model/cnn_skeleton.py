@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Dual-head CNN decoder for the (3,3) heavy-hex surface code.
 
@@ -45,30 +44,46 @@ class HeavyHexCNN(nn.Module):
     def __init__(self, in_channels=6, num_qubits=NUM_QUBITS,
                  conv_channels=64, fc_dim=256, dropout=0.1):
         super().__init__()
-        # ------------------------------------------------------------------
-        # TODO 1/3 — feature extractor
-        # Build self.features: a stack of Conv2d(3x3, padding=1) blocks
-        # (BatchNorm2d + ReLU after each conv). Input has `in_channels`
-        # channels; keep the 4x5 spatial size (no pooling).
-        # Also build self.shared: Flatten -> Linear(conv_channels*4*5,
-        # fc_dim) -> ReLU -> Dropout(dropout).
-        # ------------------------------------------------------------------
-        raise NotImplementedError("TODO: define the conv blocks")
-
-        # ------------------------------------------------------------------
-        # TODO 2/3 — the two heads
-        # self.head_qubit  : Linear(fc_dim, num_qubits)  (17 outputs, ECR)
-        # self.head_logical: Linear(fc_dim, 1)           (1 output, LER)
-        # ------------------------------------------------------------------
+        
+        # ============ TODO 1/3 & 2/3 — feature extractor + heads ============
+        # Feature extractor: Conv2d(3x3, padding=1) blocks with BatchNorm + ReLU
+        self.features = nn.Sequential(
+            nn.Conv2d(in_channels, conv_channels, kernel_size=3, padding=1),
+            nn.BatchNorm2d(conv_channels),
+            nn.ReLU(inplace=True),
+            
+            nn.Conv2d(conv_channels, conv_channels, kernel_size=3, padding=1),
+            nn.BatchNorm2d(conv_channels),
+            nn.ReLU(inplace=True),
+            
+            nn.Conv2d(conv_channels, conv_channels, kernel_size=3, padding=1),
+            nn.BatchNorm2d(conv_channels),
+            nn.ReLU(inplace=True),
+        )
+        
+        # Shared FC layer
+        self.shared = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(conv_channels * GRID_H * GRID_W, fc_dim),
+            nn.ReLU(inplace=True),
+            nn.Dropout(dropout),
+        )
+        
+        # Two heads
+        self.head_qubit = nn.Linear(fc_dim, num_qubits)      # (B, 17)
+        self.head_logical = nn.Linear(fc_dim, 1)              # (B, 1)
 
     def forward(self, x):
         x = x.float()
-        # ------------------------------------------------------------------
-        # TODO 1/3 (cont.) — feature extraction part of forward:
-        # run x through self.features and self.shared, then return the two
-        # head outputs as a tuple: (qubit_logits, logical_logits)
-        # ------------------------------------------------------------------
-        raise NotImplementedError("TODO: implement forward")
+        # Feature extraction
+        x = self.features(x)
+        # Shared FC layers
+        x = self.shared(x)
+        # Two heads
+        qubit_logits = self.head_qubit(x)
+        logical_logits = self.head_logical(x)
+        
+        return qubit_logits, logical_logits
 
 
 def compute_loss(qubit_logits, logical_logits, y_qubit, y_logical,
@@ -80,12 +95,18 @@ def compute_loss(qubit_logits, logical_logits, y_qubit, y_logical,
     per-qubit BCE's pos_weight to counter class imbalance
     (e.g. pos_weight=(1-p)/p).
     """
-    # ----------------------------------------------------------------------
-    # TODO 3/3 — loss computation
-    # * logical head: F.binary_cross_entropy_with_logits on the squeezed
-    #   (B,) logits vs y_logical.float()  -> MAIN loss
-    # * per-qubit head: F.binary_cross_entropy_with_logits on (B,17) vs
-    #   y_qubit.float(), pos_weight=qubit_pos_weight  -> AUXILIARY loss
-    # * total = main + aux_weight * auxiliary
-    # ----------------------------------------------------------------------
-    raise NotImplementedError("TODO: implement the two-head loss")
+    # ============ TODO 3/3 — loss computation ============
+    # Logical head loss (MAIN loss)
+    loss_logical = F.binary_cross_entropy_with_logits(
+        logical_logits.squeeze(-1), y_logical.float()
+    )
+    
+    # Per-qubit head loss (AUXILIARY loss)
+    loss_qubit = F.binary_cross_entropy_with_logits(
+        qubit_logits, y_qubit.float(), pos_weight=qubit_pos_weight
+    )
+    
+    # Total loss: logical-first
+    total_loss = loss_logical + aux_weight * loss_qubit
+    
+    return total_loss, loss_logical, loss_qubit
